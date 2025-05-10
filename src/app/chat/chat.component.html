@@ -1,0 +1,62 @@
+<div class="chat-container">
+  <!-- ถ้ามีข้อความ -->
+  <div *ngIf="messages.length > 0" class="chat-messages">
+    <div *ngFor="let message of messages" class="message"
+      [ngClass]="{'user-message': message.sender === 'user', 'bot-message': message.sender === 'bot'}">
+
+      <!-- เวลาและชื่อผู้ส่ง -->
+      <div class="sender-name">
+        <ng-container *ngIf="message.sender === 'bot'">
+          <i class="bi bi-openai"></i> LLM UDRU RAG - {{ message.timestamp | date:'shortTime' }}, {{ message.timestamp | date:'dd MMM' }}
+        </ng-container>
+        <ng-container *ngIf="message.sender === 'user'">
+          คุณ - {{ message.timestamp | date:'shortTime' }}, {{ message.timestamp | date:'dd MMM' }}
+        </ng-container>
+      </div>
+
+      <div class="message-row">
+        <!-- Icon Bot -->
+        <div *ngIf="message.sender === 'bot'"></div>
+
+        <div class="message-content" [innerHTML]="message.content | lineToBr"></div>
+
+        <!-- Icon Actions -->
+        <div *ngIf="message.sender === 'user'" class="icon-actions">
+          <span title="Edit" class="icon-edit"><i class="bi bi-pencil"></i></span>
+          <span title="Pin" class="icon-pin"><i class="bi bi-pin-angle-fill"></i></span>
+        </div>
+      </div>
+    </div>
+  </div>
+
+
+
+  <!-- ถ้ายังไม่มีข้อความ -->
+  <div *ngIf="messages.length === 0" class="chat-intro-center">
+    <div class="intro-message">
+      <p>สวัสดี คุณ UDRU Admin</p>
+      <p>เสริมพลังชีวิตนักศึกษา ด้วยผู้ช่วย AI จาก UDRU ที่เข้าใจทุกคำถาม ตอบได้ทุกที่!</p>
+    </div>
+  </div>
+
+
+
+  <div class="chat-input">
+    <div class="input-container">
+      <div class="new-dialog">
+        <button class="new-dialog-btn" (click)="startNewChat()">
+          <i class="bi bi-pencil"></i> New dialog
+        </button>
+      </div>
+
+      <input type="text" [(ngModel)]="newMessage" placeholder="ถามคำถามกับ UDRU ไทย? กดปุ่มส่งเพื่อถาม"
+        (keyup.enter)="sendMessage()">
+
+      <div class="input-actions">
+        <button class="action-btn send-btn" (click)="sendMessage()">
+          <i class="send-icon">➤</i>
+        </button>
+      </div>
+    </div>
+  </div>
+</div>

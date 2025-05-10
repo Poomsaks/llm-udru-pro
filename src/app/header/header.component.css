@@ -1,0 +1,64 @@
+.header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 10px 20px;
+  border-bottom: 1px solid #e0e0e0;
+  background-color: #fff;
+
+  .header-left {
+    .student-plan {
+      display: flex;
+      align-items: center;
+
+      .avatar {
+        width: 36px;
+        height: 46px;
+        margin-right: 10px;
+        display: flex;
+        justify-content: center;
+        align-items: center;
+
+        img {
+          width: 36px;
+          height: 46px;
+          border-radius: 50%;
+        }
+      }
+
+      .plan-info {
+        .plan-name {
+          font-weight: bold;
+          font-size: 14px;
+        }
+
+        .active-users {
+          font-size: 12px;
+          color: #666;
+        }
+      }
+    }
+  }
+
+  .header-right {
+    display: flex;
+    gap: 10px;
+
+    button {
+      border: none;
+      background: none;
+      cursor: pointer;
+      padding: 5px 10px;
+      font-size: 14px;
+
+      &.api-btn, &.language-btn {
+        /* border: 1px solid #ddd; */
+        border-radius: 4px;
+      }
+
+      &.admin-btn {
+        font-weight: bold;
+      }
+    }
+  }
+}

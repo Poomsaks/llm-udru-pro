@@ -1,0 +1,42 @@
+<div class="sidebar">
+  <div class="sidebar-header">
+    <button class="menu-button">
+      <i class="bi bi-justify" style="margin-right: 10px;"></i>
+      UDRU RAG
+    </button>
+    <button class="new-chat-button" (click)="newChat()">
+      <i class="plus-icon">+</i> แชทใหม่
+    </button>
+  </div>
+
+  <div class="sidebar-section">
+    <h3 class="section-title">ล่าสุด</h3>
+    <ul class="quick-items">
+      <li *ngFor="let item of sidebarItems" class="quick-item">
+        <i class="bi bi-list-ul"></i>
+        <div class="item-text" style="margin-left: 10px;">
+          <div class="item-title">{{ item.title }}</div>
+          <div class="item-subtitle" *ngIf="item.subtitle">{{ item.subtitle }}</div>
+        </div>
+      </li>
+    </ul>
+  </div>
+
+  <div class="sidebar-footer">
+    <div class="file-upload-section">
+      <button class="upload-btn">
+       <i class="bi bi-collection" style="margin-right: 10px;"></i> แหล่งที่มา
+      </button>
+      <button class="view-btn"> <i class="bi bi-folder-plus" style="margin-right: 10px;"></i> เปิด</button>
+    </div>
+
+    <div class="file-list">
+      <div *ngFor="let file of allFiles" class="file-item" [class.selected]="fileSelection[file]">
+        <i class="bi bi-paperclip" style="margin-right: 10px;"></i>
+        <span class="file-name">{{ file }}</span>
+        <input type="checkbox" [checked]="fileSelection[file]" (change)="toggleFileSelection(file)"
+          class="file-checkbox">
+      </div>
+    </div>
+  </div>
+</div>
