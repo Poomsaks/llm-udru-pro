@@ -24,13 +24,22 @@
 
   <div class="sidebar-footer">
     <div class="file-upload-section">
-      <button class="upload-btn">
-       <i class="bi bi-collection" style="margin-right: 10px;"></i> แหล่งที่มา
+      <input type="file" #fileInput hidden (change)="onFileSelected($event)" />
+      <button class="upload-btn" (click)="fileInput.click()" [disabled]="loadingFileSelection">
+        <i class="bi bi-collection" style="margin-right: 10px;"></i> แหล่งที่มา
       </button>
-      <button class="view-btn"> <i class="bi bi-folder-plus" style="margin-right: 10px;"></i> เปิด</button>
+      <button class="view-btn" (click)="fileInput.click()" [disabled]="loadingFileSelection">
+        <i class="bi bi-folder-plus" style="margin-right: 10px;"></i> เปิด
+      </button>
     </div>
 
-    <div class="file-list">
+    <div *ngIf="loadingFileSelection" class="spinner-container" style="text-align: center; margin: 10px 0;">
+      <div class="spinner-border text-primary" role="status" style="width: 2rem; height: 2rem;">
+        <span class="visually-hidden">Loading...</span>
+      </div>
+    </div>
+
+    <div class="file-list" [class.loading]="loadingFileSelection">
       <div *ngFor="let file of allFiles" class="file-item" [class.selected]="fileSelection[file]">
         <i class="bi bi-paperclip" style="margin-right: 10px;"></i>
         <span class="file-name">{{ file }}</span>

@@ -10,6 +10,7 @@ import { ChatComponent } from './chat/chat.component';
 import { HeaderComponent } from './header/header.component';
 import { FormsModule } from '@angular/forms';
 import { LineToBrPipe } from './line-to-br.pipe';
+import { HttpClientModule, provideHttpClient, withInterceptorsFromDi } from '@angular/common/http';
 
 @NgModule({
   declarations: [
@@ -27,7 +28,7 @@ import { LineToBrPipe } from './line-to-br.pipe';
     FormsModule
   ],
   providers: [
-    provideClientHydration(withEventReplay())
+    provideHttpClient(withInterceptorsFromDi())
   ],
   bootstrap: [AppComponent]
 })

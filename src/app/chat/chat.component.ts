@@ -1,4 +1,5 @@
 import { Component, OnInit } from '@angular/core';
+import { MainServiceService } from '../mainService/main-service.service';
 
 interface ChatMessage {
   sender: 'user' | 'bot';
@@ -15,43 +16,63 @@ interface ChatMessage {
 export class ChatComponent implements OnInit {
   messages: ChatMessage[] = [];
   newMessage: string = '';
+  constructor(private _serviceService: MainServiceService) { }
 
   ngOnInit() {
-    // Add initial welcome message
-    // this.messages = [
-    //   {
-    //     sender: 'bot',
-    //     content: 'สวัสดี คุณ UDRU Admin\n\nเสริมพลังชีวิตนักศึกษา ด้วยผู้ช่วย AI จาก UDRU ที่เข้าใจทุกคำถาม ตอบได้ทุกที่!',
-    //     timestamp: new Date()
-    //   }
-    // ];
+    this._serviceService.getChat().subscribe((res: ChatMessage[]) => {
+      this.messages = res;
+    });
   }
 
   sendMessage() {
     if (!this.newMessage.trim()) return;
 
-    // Add user message
-    this.messages.push({
+    const userMessage: ChatMessage = {
       sender: 'user',
       content: this.newMessage,
       timestamp: new Date()
-    });
+    };
 
-    // Clear input
+    this.messages.push(userMessage);
+
     this.newMessage = '';
 
-    // Simulate bot response (in a real app, this would call a service)
+    const botMessage: ChatMessage = {
+      sender: 'bot',
+      content: 'กำลังประมวลผลคำถามของคุณ...',
+      timestamp: new Date()
+    };
+
     setTimeout(() => {
-      this.messages.push({
-        sender: 'bot',
-        content: 'กำลังประมวลผลคำถามของคุณ...',
-        timestamp: new Date()
-      });
+      this.messages.push(botMessage);
+      // this._serviceService.saveChat(botMessage).subscribe();
     }, 1000);
   }
 
   startNewChat() {
-    // Reset chat messages except for welcome message
-    this.messages = [this.messages[0]];
+    // 1. บันทึกแชททั้งหมดที่มีอยู่ก่อนเริ่มใหม่
+    if (this.messages.length > 0) {
+      this._serviceService.saveChat(this.messages).subscribe(() => {
+        // 2. หลังบันทึกสำเร็จ ค่อยเริ่มแชทใหม่
+        const userMessage: ChatMessage = {
+          sender: 'user',
+          content: 'เริ่มแชทใหม่',
+          timestamp: new Date()
+        };
+
+        const welcomeMessage: ChatMessage = {
+          sender: 'bot',
+          content: 'ยินดีต้อนรับสู่แชทใหม่ค่ะ',
+          timestamp: new Date()
+        };
+
+        this.messages = [userMessage, welcomeMessage];
+
+        this._serviceService.saveChat(userMessage).subscribe();
+        this._serviceService.saveChat(welcomeMessage).subscribe();
+      });
+    }
   }
+
+
 }
