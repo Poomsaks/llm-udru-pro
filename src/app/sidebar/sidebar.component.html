@@ -12,7 +12,8 @@
   <div class="sidebar-section">
     <h3 class="section-title">ล่าสุด</h3>
     <ul class="quick-items">
-      <li *ngFor="let item of sidebarItems" class="quick-item">
+      <li *ngFor="let item of sidebarItems" class="quick-item" (click)="onSidebarItemClick(item)"
+        style="cursor: pointer;">
         <i class="bi bi-list-ul"></i>
         <div class="item-text" style="margin-left: 10px;">
           <div class="item-title">{{ item.title }}</div>
@@ -21,6 +22,7 @@
       </li>
     </ul>
   </div>
+
 
   <div class="sidebar-footer">
     <div class="file-upload-section">

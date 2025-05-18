@@ -24,9 +24,24 @@ export class MainServiceService {
   saveChat(message: any): Observable<any> {
     return this.http.post<any>(`${environment.API_URL}/save_chat`, message);
   }
-
-  getChat(): Observable<any> {
-    return this.http.get<any>(`${environment.API_URL}/get_chats`);
+  getChatSources(): Observable<any> {
+    return this.http.get<any>(`${environment.API_URL}/get_chat_sources`);
+  }
+  getChatsBySource(sourceId: number): Observable<any> {
+    return this.http.get(`${environment.API_URL}/get_chats_by_source/${sourceId}`);
+  }
+  generate(query: string, files: string[]): Observable<any> {
+    const headers = new HttpHeaders({
+      'Content-Type': 'application/json'
+    });
+    const body = {
+      query: query,
+      files: files
+    };
+    return this.http.post<any>(`${environment.API_URL}/generate`, body, { headers });
+  }
+  updateSelectedFiles(payload: { files: string[], is_active: boolean }): Observable<any> {
+    return this.http.put<any>(`${environment.API_URL}/update_status`, payload);
   }
 
 }

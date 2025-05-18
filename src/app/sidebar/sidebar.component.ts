@@ -1,8 +1,10 @@
 import { Component, OnInit } from '@angular/core';
 import { MainServiceService } from '../mainService/main-service.service';
 import { Router } from '@angular/router';
+import { ChatService } from '../mainService/chat.service';
 
 interface SidebarItem {
+  id: number;
   title: string;
   subtitle?: string;
 }
@@ -18,27 +20,26 @@ export class SidebarComponent implements OnInit {
   constructor(
     private _serviceService: MainServiceService,
     private router: Router,
+    private chatService: ChatService
   ) { }
 
-  sidebarItems: SidebarItem[] = [
-    { title: 'Explain quantum computing in simple terms' },
-    { title: 'Got any creative ideas for a 10 year old sbirthday' },
-    { title: 'How do I make an HTTP request in JavaScript?' },
-    { title: 'Remember what user said earlier in the conversation' },
-    { title: 'Allow user to provide follow-up corrections' },
-    { title: 'Trained to decline inappropriate requests' }
-  ];
+  sidebarItems: SidebarItem[] = [];
 
-  selectedFiles: string[] = [
-    'archive-undergraduate.pdf',
-    '100 creative ideas.pdf'
-  ];
+  selectedFiles: string[] = [];
 
   fileSelection: { [key: string]: boolean } = {};
   allFiles: string[] = [];
 
   ngOnInit(): void {
     this.getListDoc();
+    this.getChatSources()
+
+    //update list chat
+    this.chatService.listSource$.subscribe(() => {
+      console.log('this.chatService.listSource$');
+
+      this.getChatSources();
+    });
   }
 
   loadingFileSelection = false;
@@ -52,22 +53,17 @@ export class SidebarComponent implements OnInit {
         this.allFiles = [];
 
         if (res?.documents && res.documents.length > 0) {
-          res.documents.forEach((doc: { filename: string }) => {
-            this.fileSelection[doc.filename] = false;
+          res.documents.forEach((doc: { filename: string; is_active: boolean }) => {
+            this.fileSelection[doc.filename] = doc.is_active;
             this.allFiles.push(doc.filename);
           });
         } else {
-          // ถ้าไม่มีข้อมูล
           this.fileSelection = {};
           this.allFiles = [];
         }
-
-        console.log('fileSelection:', this.fileSelection);
-        console.log('allFiles:', this.allFiles);
       },
       error: (err) => {
         console.error('Error loading listDoc:', err);
-        // กรณี error ก็ให้เป็นค่าว่าง
         this.fileSelection = {};
         this.allFiles = [];
       },
@@ -76,13 +72,66 @@ export class SidebarComponent implements OnInit {
       }
     });
   }
+  loadingChat = false;
+  getChatSources() {
+    this.loadingChat = true;
 
-
-  toggleFileSelection(fileName: string): void {
-    this.fileSelection[fileName] = !this.fileSelection[fileName];
+    this._serviceService.getChatSources().subscribe({
+      next: (sources) => {
+        this.sidebarItems = sources.map((source: any) => ({
+          id: source.id,
+          title: source.source_name
+        }));
+        this.loadingChat = false;
+      },
+      error: (err) => {
+        console.error('Failed to load sources', err);
+        this.loadingChat = false;
+      }
+    });
+  }
+  selectedSourceId: number | null = null;
+  chatItems: any[] = [];
+  onSidebarItemClick(item: SidebarItem) {
+    this.selectedSourceId = item.id;
+    console.log('step1', this.selectedSourceId);
+    this.chatService.setSelectedSourceId(item.id);
   }
 
+  toggleFileSelection(fileName: string): void {
+    // สลับสถานะเลือก/ไม่เลือก
+    this.fileSelection[fileName] = !this.fileSelection[fileName];
+
+    // เก็บชื่อไฟล์ที่ถูกเลือกทั้งหมด
+    this.selectedFiles = Object.keys(this.fileSelection).filter(
+      fname => this.fileSelection[fname]
+    );
+    console.log('Selected Files:', this.selectedFiles);
+
+    // เรียก API อัพเดตสถานะ
+    this.updateStatus(this.selectedFiles, true);
+  }
+
+  // ฟังก์ชันเรียก API อัพเดตสถานะไฟล์
+  updateStatus(files: string[], isActive: boolean): void {
+    const payload = {
+      files: files,
+      is_active: isActive
+    };
+
+    this._serviceService.updateSelectedFiles(payload).subscribe({
+      next: (res) => {
+        console.log('Status updated:', res);
+      },
+      error: (err) => {
+        console.error('Error updating status:', err);
+      }
+    });
+  }
+
+
   onFileSelected(event: any) {
+    this.loadingFileSelection = true;
     const file: File = event.target.files[0];
     if (file) {
       this._serviceService.uploadFile(file).subscribe({
@@ -91,6 +140,7 @@ export class SidebarComponent implements OnInit {
           this.getListDoc();
         },
         error: (err) => {
+          this.loadingFileSelection = false;
           console.error('Upload failed:', err);
         }
       });
@@ -98,5 +148,6 @@ export class SidebarComponent implements OnInit {
   }
   newChat(): void {
     console.log('Creating new chat');
+    this.chatService.triggerSaveChat();
   }
 }
