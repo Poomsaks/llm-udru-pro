@@ -7,7 +7,7 @@
     "build": "ng build",
     "watch": "ng build --watch --configuration development",
     "test": "ng test",
-    "serve:ssr:llm-udru-pro": "node dist/llm-udru-pro/server/server.mjs"
+    "prod": "ng build --configuration=production --base-href /llm-udru/"
   },
   "private": true,
   "dependencies": {
