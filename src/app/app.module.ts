@@ -8,9 +8,13 @@ import { MainComponent } from './main/main.component';
 import { SidebarComponent } from './sidebar/sidebar.component';
 import { ChatComponent } from './chat/chat.component';
 import { HeaderComponent } from './header/header.component';
-import { FormsModule } from '@angular/forms';
+import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { LineToBrPipe } from './line-to-br.pipe';
-import { HttpClientModule, provideHttpClient, withInterceptorsFromDi } from '@angular/common/http';
+import { provideHttpClient, withInterceptorsFromDi } from '@angular/common/http';
+import { LoginComponent } from './login/login.component';
+import { DashboardComponent } from './dashboard/dashboard.component';
+import { NgChartsModule } from 'ng2-charts';
+import { DataComponent } from './data/data.component';
 
 @NgModule({
   declarations: [
@@ -20,12 +24,17 @@ import { HttpClientModule, provideHttpClient, withInterceptorsFromDi } from '@an
     SidebarComponent,
     ChatComponent,
     HeaderComponent,
-    LineToBrPipe
+    LineToBrPipe,
+    LoginComponent,
+    DashboardComponent,
+    DataComponent
   ],
   imports: [
     BrowserModule,
     AppRoutingModule,
-    FormsModule
+    FormsModule,
+    ReactiveFormsModule,
+    NgChartsModule
   ],
   providers: [
     provideHttpClient(withInterceptorsFromDi())

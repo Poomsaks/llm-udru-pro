@@ -24,7 +24,7 @@
   </div>
 
 
-  <div class="sidebar-footer">
+  <div class="sidebar-footer"  *ngIf="isLoggedIn">
     <div class="file-upload-section">
       <input type="file" #fileInput hidden (change)="onFileSelected($event)" />
       <button class="upload-btn" (click)="fileInput.click()" [disabled]="loadingFileSelection">

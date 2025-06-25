@@ -43,5 +43,8 @@ export class MainServiceService {
   updateSelectedFiles(payload: { files: string[], is_active: boolean }): Observable<any> {
     return this.http.put<any>(`${environment.API_URL}/update_status`, payload);
   }
+  getStats(): Observable<any> {
+    return this.http.get(`${environment.API_URL}/stats`);
+  }
 
 }

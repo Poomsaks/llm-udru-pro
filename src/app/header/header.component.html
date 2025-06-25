@@ -1,19 +1,19 @@
 <div class="header">
   <div class="header-left">
-    <div class="student-plan">
+    <div class="student-plan" (click)="gotoHome()">
       <div class="avatar">
         <img src="assets/avatar.png" alt="Avatar">
       </div>
       <div class="plan-info">
         <div class="plan-name">Student plan</div>
-        <div class="active-users" style="color: green;">• Active 25,000 people</div>
+        <div class="active-users" style="color: green;">• จำนวนผู้ใช้งาน {{ total }} คน</div>
       </div>
     </div>
   </div>
   <div class="header-right">
-    <button class="help-btn">Help <i class="bi bi-question-circle"  style="margin-left: 5px;"></i></button>
-    <button class="api-btn">API <i class="bi bi-link-45deg" style="margin-left: 5px;"></i></button>
-    <button class="language-btn" style="font-weight: 700;">TH</button>
-    <button class="admin-btn">UDRU Admin</button>
+    <!-- <button class="help-btn">Help <i class="bi bi-question-circle"  style="margin-left: 5px;"></i></button>
+    <button class="api-btn">API <i class="bi bi-link-45deg" style="margin-left: 5px;"></i></button> -->
+    <button class="language-btn" style="font-weight: 700;" *ngIf="isLoggedIn" (click)="gotoDashboard()">Dashboard</button>
+    <button class="admin-btn" (click)="gotoLogin()">UDRU Admin</button>
   </div>
 </div>

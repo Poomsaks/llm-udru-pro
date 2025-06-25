@@ -2,6 +2,7 @@ import { Component, OnInit } from '@angular/core';
 import { MainServiceService } from '../mainService/main-service.service';
 import { ChatService } from '../mainService/chat.service';
 import { ChatMessage } from '../chat/chat.model';
+import { SharedService } from '../mainService/shared.service';
 
 @Component({
   selector: 'chat',
@@ -16,7 +17,8 @@ export class ChatComponent implements OnInit {
 
   constructor(
     private _serviceService: MainServiceService,
-    private chatService: ChatService
+    private chatService: ChatService,
+    private sharedService: SharedService
   ) { }
 
   ngOnInit() {
@@ -74,8 +76,29 @@ export class ChatComponent implements OnInit {
       });
     }
   }
+  total = 0
+  fetchStats(): Promise<number> {
+    return new Promise((resolve, reject) => {
+      this._serviceService.getStats().subscribe({
+        next: (response) => {
+          this.total = response.total_clients;
+          resolve(this.total);
+        },
+        error: (err) => {
+          reject(err);
+        }
+      });
+    });
+  }
+  someMethodOrAfterApiCall() {
+    // this.total = 100;
+    this.sharedService.setTotal(this.total);
+  }
 
-  sendMessage() {
+  async sendMessage() {
+    const totalFromApi = await this.fetchStats();
+    this.total = totalFromApi;
+    this.someMethodOrAfterApiCall(); // now safe
     if (!this.newMessage.trim()) return;
 
     const userMessage: ChatMessage = {

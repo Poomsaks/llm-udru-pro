@@ -1,0 +1,25 @@
+<div class="login-container-wrapper">
+  <div class="login-container">
+    <!-- โลโก้ด้านบน -->
+    <img src="assets/avatar.png" alt="Logo" />
+
+    <!-- ฟอร์ม Login -->
+    <form [formGroup]="loginForm" (ngSubmit)="onSubmit()">
+      <div>
+        <label>ชื่อผู้ใช้</label>
+        <input type="text" formControlName="username" />
+      </div>
+
+      <div>
+        <label>รหัสผ่าน</label>
+        <input type="password" formControlName="password" />
+      </div>
+
+      <div *ngIf="errorMessage" style="color:red">
+        {{ errorMessage }}
+      </div>
+
+      <button type="submit" [disabled]="loginForm.invalid">เข้าสู่ระบบ</button>
+    </form>
+  </div>
+</div>

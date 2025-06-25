@@ -29,8 +29,15 @@ export class SidebarComponent implements OnInit {
 
   fileSelection: { [key: string]: boolean } = {};
   allFiles: string[] = [];
-
+  isLoggedIn = false;
   ngOnInit(): void {
+    if (typeof window !== 'undefined' && localStorage.getItem('token')) {
+      this.isLoggedIn = true;
+    } else {
+      this.isLoggedIn = false;
+    }
+    // this.isLoggedIn = !!token; // true ถ้ามี token
+
     this.getListDoc();
     this.getChatSources()
 
@@ -40,6 +47,9 @@ export class SidebarComponent implements OnInit {
 
       this.getChatSources();
     });
+  }
+  refreshLoginState() {
+    this.isLoggedIn = !!localStorage.getItem('token');
   }
 
   loadingFileSelection = false;
